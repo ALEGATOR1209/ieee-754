@@ -15,6 +15,7 @@ private fun String.toBits(n: Int = 0) = when {
     length > n -> throw IllegalArgumentException("Bit grid overflow")
     else -> first().toString().repeat(n - length) + this
 }
+
 /**
  * Extension function for signed magnitude representation of a integer number.
  * @receiver the number to be converted
