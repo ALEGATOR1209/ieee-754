@@ -1,6 +1,8 @@
 package ieee754
 
+import java.lang.IllegalArgumentException
 import java.math.BigInteger
+import kotlin.math.pow
 
 /** IEEE-754 Double (DQ) number. */
 class Double(
@@ -10,6 +12,13 @@ class Double(
 ) : FloatingPointNumber(sign, exponent, fraction) {
     override val EXPONENT_SIZE = 11
     override val FRACTION_SIZE = 52
+
+    init {
+        when {
+            exponent >= (2.0).pow(EXPONENT_SIZE) || exponent < 0 -> throw IllegalArgumentException("Invalid exponent: $exponent")
+            fraction >= BigInteger.TWO.pow(FRACTION_SIZE) || fraction < BigInteger.ZERO -> throw IllegalArgumentException("Invalid fraction: $fraction")
+        }
+    }
 
     override fun toFloat() = toDouble().toFloat()
     override fun toDouble() = kotlin.Double.fromBits(toLong())
