@@ -1,6 +1,7 @@
 package ieee754
 
 import java.lang.IllegalArgumentException
+import java.math.BigInteger
 import kotlin.math.absoluteValue
 
 /**
@@ -17,7 +18,7 @@ private fun String.toBits(n: Int = 0) = when {
 }
 
 /**
- * Extension function for signed magnitude representation of a integer number.
+ * Extension function for signed magnitude representation of a [Int] number.
  * @receiver the number to be converted
  * @param bits number of bits in result string. If [bits] = 0, number will take minimal number of bits
  * @throws IllegalArgumentException if number bits more than [bits]
@@ -28,7 +29,7 @@ fun Int.signedMagnitude(bits: Int = 0) = (
 ).toBits(bits)
 
 /**
- * Extension function for one's complement representation of a integer number.
+ * Extension function for one's complement representation of a [Int] number.
  * @receiver the number to be converted
  * @param bits number of bits in result string. If [bits] = 0, number will take minimal number of bits
  * @throws IllegalArgumentException if number bits more than [bits]
@@ -44,7 +45,7 @@ fun Int.onesComplement(bits: Int = 0) = if (this >= 0) signedMagnitude(bits) els
     .toBits(bits)
 
 /**
- * Extension function for two's complement representation of a integer number.
+ * Extension function for two's complement representation of a [Int] number.
  * @receiver the number to be converted
  * @param bits number of bits in result string. If [bits] = 0, number will take minimal number of bits
  * @throws IllegalArgumentException if number bits more than [bits]
@@ -55,3 +56,44 @@ fun Int.twosComplement(bits: Int) = if (this >= 0) signedMagnitude(bits) else on
     .plus(1)
     .toString(2)
     .toBits(bits)
+
+/**
+ * Extension function for signed magnitude representation of a [BigInteger] number.
+ * @receiver the number to be converted
+ * @param bits number of bits in result string. If [bits] = 0, number will take minimal number of bits
+ * @throws IllegalArgumentException if number bits more than [bits]
+ * @return String - signed magnitude representation of given number
+ */
+fun BigInteger.signedMagnitude(bits: Int = 0) = (
+        (if (this >= BigInteger.ZERO) "0" else "1") + this.abs().toString(2)
+).toBits(bits)
+
+/**
+ * Extension function for one's complement representation of a [BigInteger] number.
+ * @receiver the number to be converted
+ * @param bits number of bits in result string. If [bits] = 0, number will take minimal number of bits
+ * @throws IllegalArgumentException if number bits more than [bits]
+ * @return String - one's complement of given number
+ */
+fun BigInteger.onesComplement(bits: Int = 0) = if (this >= BigInteger.ZERO) signedMagnitude(bits) else signedMagnitude()
+        .replaceFirst('1','0')
+        .map { when (it) {
+            '0' -> '1'
+            '1' -> '0'
+            else -> error("Illegal character: $it")
+        }}.joinToString("")
+        .toBits(bits)
+
+/**
+ * Extension function for two's complement representation of a [BigInteger] number.
+ * @receiver the number to be converted
+ * @param bits number of bits in result string. If [bits] = 0, number will take minimal number of bits
+ * @throws IllegalArgumentException if number bits more than [bits]
+ * @return String - two's complement of given number
+ */
+fun BigInteger.twosComplement(bits: Int) = if (this >= BigInteger.ZERO) signedMagnitude(bits) else onesComplement()
+        .toInt(2)
+        .plus(1)
+        .toString(2)
+        .toBits(bits)
+

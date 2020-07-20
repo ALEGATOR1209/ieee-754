@@ -3,22 +3,16 @@ import ieee754.FloatingPointNumber
 import org.junit.Assert
 import org.junit.Test
 
-class FloatTest {
+class DoubleTest {
     private val float1 = Float(
             FloatingPointNumber.Sign.MINUS,
             "10000010".toInt(2),
-            "01001000000000000000000".toBigInteger(2)
+            "01001000000000000000000".toInt(2)
     )
 
     @Test
     fun toStringTest() {
         Assert.assertEquals("11000001001001000000000000000000", float1.toString())
-    }
-
-
-    @Test
-    fun toBigIntegerTest() {
-        Assert.assertEquals(3_240_361_984.toBigInteger(), float1.toBigInteger())
     }
 
     @Test
@@ -46,15 +40,15 @@ class FloatTest {
         val float = Float.fromBinaryString("11000001001001000000000000000000")
         Assert.assertEquals(FloatingPointNumber.Sign.MINUS, float.sign)
         Assert.assertEquals(130, float.exponent)
-        Assert.assertEquals(2359296.toBigInteger(), float.fraction)
+        Assert.assertEquals(2359296, float.fraction)
     }
 
     @Test
     fun fromBitsTest() {
-        val float = Float.fromBits(3_240_361_984.toBigInteger())
+        val float = Float.fromBits(3_240_361_984)
         Assert.assertEquals(FloatingPointNumber.Sign.MINUS, float.sign)
         Assert.assertEquals(130, float.exponent)
-        Assert.assertEquals(2359296.toBigInteger(), float.fraction)
+        Assert.assertEquals(2359296, float.fraction)
     }
 
     @Test
@@ -65,7 +59,7 @@ class FloatTest {
         Assert.assertEquals(FloatingPointNumber.Sign.MINUS, float2.sign)
         Assert.assertEquals(130, float1.exponent)
         Assert.assertEquals(130, float2.exponent)
-        Assert.assertEquals(2359296.toBigInteger(), float1.fraction)
-        Assert.assertEquals(2359296.toBigInteger(), float2.fraction)
+        Assert.assertEquals(2359296, float1.fraction)
+        Assert.assertEquals(2359296, float2.fraction)
     }
 }
