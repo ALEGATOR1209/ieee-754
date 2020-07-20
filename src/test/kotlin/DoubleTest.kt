@@ -1,65 +1,72 @@
-import ieee754.Float
+import ieee754.Double
 import ieee754.FloatingPointNumber
 import org.junit.Assert
 import org.junit.Test
 
 class DoubleTest {
-    private val float1 = Float(
+    private val double1 = Double(
             FloatingPointNumber.Sign.MINUS,
-            "10000010".toInt(2),
-            "01001000000000000000000".toInt(2)
+            "402".toInt(16),
+            "4800000000000".toBigInteger(16)
     )
+
+    private val binary = "1100000000100100100000000000000000000000000000000000000000000000"
 
     @Test
     fun toStringTest() {
-        Assert.assertEquals("11000001001001000000000000000000", float1.toString())
+        Assert.assertEquals(binary, double1.toString())
+    }
+
+    @Test
+    fun toBigIntegerTest() {
+        Assert.assertEquals(binary.toBigInteger(2), double1.toBigInteger())
     }
 
     @Test
     fun toLongTest() {
-        Assert.assertEquals(3_240_361_984, float1.toLong())
+        Assert.assertEquals(binary.toBigInteger(2).toLong(), double1.toLong())
     }
 
     @Test
     fun toHexTest() {
-        Assert.assertEquals("c1240000", float1.toHex())
+        Assert.assertEquals("c024800000000000", double1.toHex())
     }
 
     @Test
     fun toFloatTest() {
-        Assert.assertEquals(-10.25f, float1.toFloat(), 0.0f)
+        Assert.assertEquals(-10.25f, double1.toFloat(), 0.0f)
     }
 
     @Test
     fun toDoubleTest() {
-        Assert.assertEquals(-10.25, float1.toDouble(), 0.0)
+        Assert.assertEquals(-10.25, double1.toDouble(), 0.0)
     }
 
     @Test
     fun fromBinaryStringTest() {
-        val float = Float.fromBinaryString("11000001001001000000000000000000")
-        Assert.assertEquals(FloatingPointNumber.Sign.MINUS, float.sign)
-        Assert.assertEquals(130, float.exponent)
-        Assert.assertEquals(2359296, float.fraction)
+        val double = Double.fromBinaryString(binary)
+        Assert.assertEquals(FloatingPointNumber.Sign.MINUS, double.sign)
+        Assert.assertEquals(1026, double.exponent)
+        Assert.assertEquals(1_266_637_395_197_952L.toBigInteger(), double.fraction)
     }
 
     @Test
     fun fromBitsTest() {
-        val float = Float.fromBits(3_240_361_984)
-        Assert.assertEquals(FloatingPointNumber.Sign.MINUS, float.sign)
-        Assert.assertEquals(130, float.exponent)
-        Assert.assertEquals(2359296, float.fraction)
+        val double = Double.fromBits(binary.toBigInteger(2))
+        Assert.assertEquals(FloatingPointNumber.Sign.MINUS, double.sign)
+        Assert.assertEquals(1026, double.exponent)
+        Assert.assertEquals(1_266_637_395_197_952L.toBigInteger(), double.fraction)
     }
 
     @Test
     fun fromHexStringTest() {
-        val float1 = Float.fromHexString("c1240000")
-        val float2 = Float.fromHexString("C1240000")
-        Assert.assertEquals(FloatingPointNumber.Sign.MINUS, float1.sign)
-        Assert.assertEquals(FloatingPointNumber.Sign.MINUS, float2.sign)
-        Assert.assertEquals(130, float1.exponent)
-        Assert.assertEquals(130, float2.exponent)
-        Assert.assertEquals(2359296, float1.fraction)
-        Assert.assertEquals(2359296, float2.fraction)
+        val double1 = Double.fromHexString("c024800000000000")
+        val double2 = Double.fromHexString("C024800000000000")
+        Assert.assertEquals(FloatingPointNumber.Sign.MINUS, double1.sign)
+        Assert.assertEquals(FloatingPointNumber.Sign.MINUS, double2.sign)
+        Assert.assertEquals(1026, double1.exponent)
+        Assert.assertEquals(1026, double2.exponent)
+        Assert.assertEquals(1_266_637_395_197_952L.toBigInteger(), double1.fraction)
+        Assert.assertEquals(1_266_637_395_197_952L.toBigInteger(), double2.fraction)
     }
 }
