@@ -11,8 +11,8 @@ class Float(
 ) : FloatingPointNumber(sign, exponent, fraction) {
     init {
         when {
-            exponent >= (2.0).pow(8) || exponent < 0 -> throw IllegalArgumentException("Invalid exponent: $exponent")
-            fraction >= (2.0).pow(23) || fraction < 0 -> throw IllegalArgumentException("Invalid fraction: $fraction")
+            exponent >= (2.0).pow(EXPONENT_SIZE) || exponent < 0 -> throw IllegalArgumentException("Invalid exponent: $exponent")
+            fraction >= (2.0).pow(FRACTION_SIZE) || fraction < 0 -> throw IllegalArgumentException("Invalid fraction: $fraction")
         }
     }
 
@@ -20,15 +20,19 @@ class Float(
     override fun toDouble() = toFloat().toDouble()
 
     companion object {
-        private const val BIAS: Int = 127
+        /** Size of exponent bits. */
+        const val EXPONENT_SIZE = 8
+
+        /** Size of fraction bits. */
+        const val FRACTION_SIZE = 23
 
         /** Converts bits in string to instance of [Float].
          * @param str string with bits.
          * @return instance of [Float]. */
         fun fromBinaryString(str: String): Float {
             val sign = if (str[0] == '0') Sign.PLUS else Sign.MINUS
-            val exponent = str.substring(1, 9).toInt(2)
-            val fraction = str.substring(9).toInt(2)
+            val exponent = str.substring(1, EXPONENT_SIZE + 1).toInt(2)
+            val fraction = str.substring(EXPONENT_SIZE + 1).toInt(2)
             return Float(sign, exponent, fraction)
         }
 
