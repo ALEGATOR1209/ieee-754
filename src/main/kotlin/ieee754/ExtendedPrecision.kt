@@ -13,23 +13,13 @@ class ExtendedPrecision(
         exponent: Int,
         fraction: BigInteger,
         val integerPart: IntegerPart = IntegerPart.ONE
-) : FloatingPointNumber(sign, exponent, fraction) {
-    override val EXPONENT_SIZE = 15
-    override val FRACTION_SIZE = 63
-
-    init {
-        when {
-            exponent >= (2.0).pow(EXPONENT_SIZE) || exponent < 0 -> throw IllegalArgumentException("Invalid exponent: $exponent")
-            fraction >= BigInteger.TWO.pow(FRACTION_SIZE) || fraction < BigInteger.ZERO -> throw IllegalArgumentException("Invalid fraction: $fraction")
-        }
-    }
-
-    override fun toFloat() = toDouble().toFloat()
+) : FloatingPointNumber(sign, exponent, fraction, EXPONENT_SIZE, FRACTION_SIZE) {
     override fun toDouble() = when {
         16383 - exponent.absoluteValue > 1023 -> if (sign == Sign.PLUS) Double.POSITIVE_INFINITY else Double.NEGATIVE_INFINITY
         integerPart == IntegerPart.ZERO -> Double.NaN
         else -> Double(sign, exponent - 16383 + 1023, fraction.shiftRight(FRACTION_SIZE - 52)).toDouble()
     }
+    override fun toFloat() = toDouble().toFloat()
 
     override fun toString() = StringBuilder().apply {
         append(if (sign >= 0) '0' else '1')
@@ -49,9 +39,9 @@ class ExtendedPrecision(
          * @return instance of [Float]. */
         fun fromBinaryString(str: String): ExtendedPrecision {
             val sign = if (str[0] == '0') Sign.PLUS else Sign.MINUS
-            val exponent = str.substring(1, 16).toInt(2)
-            val integerPart = if (str[16] == '1') IntegerPart.ONE else IntegerPart.ZERO
-            val fraction = str.substring(17).toBigInteger(2)
+            val exponent = str.substring(1, EXPONENT_SIZE + 1).toInt(2)
+            val integerPart = if (str[EXPONENT_SIZE + 1] == '1') IntegerPart.ONE else IntegerPart.ZERO
+            val fraction = str.substring(EXPONENT_SIZE + 2).toBigInteger(2)
             return ExtendedPrecision(sign, exponent, fraction, integerPart)
         }
 
@@ -65,5 +55,8 @@ class ExtendedPrecision(
          * @param str string with hex representation of number.
          * @return instance of [Float]. */
         fun fromHexString(str: String) = fromBits(str.toLowerCase().toBigInteger(16))
+
+        const val EXPONENT_SIZE = 15
+        const val FRACTION_SIZE = 63
     }
 }

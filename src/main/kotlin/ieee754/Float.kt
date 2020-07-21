@@ -9,17 +9,7 @@ class Float(
     sign: Sign,
     exponent: Int,
     fraction: BigInteger
-) : FloatingPointNumber(sign, exponent, fraction) {
-    override val EXPONENT_SIZE = 8
-    override val FRACTION_SIZE = 23
-
-    init {
-        when {
-            exponent >= (2.0).pow(EXPONENT_SIZE) || exponent < 0 -> throw IllegalArgumentException("Invalid exponent: $exponent")
-            fraction >= BigInteger.TWO.pow(FRACTION_SIZE) || fraction < BigInteger.ZERO -> throw IllegalArgumentException("Invalid fraction: $fraction")
-        }
-    }
-
+) : FloatingPointNumber(sign, exponent, fraction, EXPONENT_SIZE, FRACTION_SIZE) {
     override fun toFloat() = kotlin.Float.fromBits(toLong().toInt())
     override fun toDouble() = toFloat().toDouble()
 
@@ -29,8 +19,8 @@ class Float(
          * @return instance of [Float]. */
         fun fromBinaryString(str: String): Float {
             val sign = if (str[0] == '0') Sign.PLUS else Sign.MINUS
-            val exponent = str.substring(1, 9).toInt(2)
-            val fraction = str.substring(9).toLong(2).toBigInteger()
+            val exponent = str.substring(1, EXPONENT_SIZE + 1).toInt(2)
+            val fraction = str.substring(EXPONENT_SIZE + 1).toBigInteger(2)
             return Float(sign, exponent, fraction)
         }
 
@@ -44,5 +34,8 @@ class Float(
          * @param str string with hex representation of number.
          * @return instance of [Float]. */
         fun fromHexString(str: String) = fromBits(str.toLowerCase().toBigInteger(16))
+
+        const val EXPONENT_SIZE = 8
+        const val FRACTION_SIZE = 23
     }
 }

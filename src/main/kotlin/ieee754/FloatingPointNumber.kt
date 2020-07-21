@@ -1,23 +1,29 @@
 package ieee754
 
+import java.lang.IllegalArgumentException
 import java.math.BigInteger
+import kotlin.math.pow
 
 /** Abstract class that represents floating point value in IEEE 754 format*/
 abstract class FloatingPointNumber(
     val sign: Sign,
     val exponent: Int,
-    val fraction: BigInteger
+    val fraction: BigInteger,
+    private val exponentSize: Int,
+    private val fractionSize: Int
 ) {
-    /** Size of exponent bits. */
-    abstract val EXPONENT_SIZE: Int
 
-    /** Size of fraction bits. */
-    abstract val FRACTION_SIZE: Int
+    init {
+        when {
+            exponent >= (2.0).pow(exponentSize) || exponent < 0 -> throw IllegalArgumentException("Invalid exponent: $exponent")
+            fraction >= BigInteger.TWO.pow(fractionSize) || fraction < BigInteger.ZERO -> throw IllegalArgumentException("Invalid fraction: $fraction")
+        }
+    }
 
     override fun toString() = StringBuilder().apply {
         append(if (sign >= 0) '0' else '1')
-        append(exponent.signedMagnitude(EXPONENT_SIZE + 1).substring(1))
-        append(fraction.signedMagnitude(FRACTION_SIZE + 1).substring(1))
+        append(exponent.signedMagnitude(exponentSize + 1).substring(1))
+        append(fraction.signedMagnitude(fractionSize + 1).substring(1))
     }.toString()
 
 
