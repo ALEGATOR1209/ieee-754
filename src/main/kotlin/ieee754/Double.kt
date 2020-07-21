@@ -1,8 +1,6 @@
 package ieee754
 
-import java.lang.IllegalArgumentException
 import java.math.BigInteger
-import kotlin.math.pow
 
 /** IEEE-754 Double (DQ) number. */
 class Double(

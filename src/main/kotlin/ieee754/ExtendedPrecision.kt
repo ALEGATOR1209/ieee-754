@@ -1,11 +1,9 @@
 package ieee754
 
-import java.lang.IllegalArgumentException
 import java.math.BigInteger
 import kotlin.Double
 import kotlin.Float
 import kotlin.math.absoluteValue
-import kotlin.math.pow
 
 /** IEEE-754 Extended Precision (DT) number. */
 class ExtendedPrecision(
