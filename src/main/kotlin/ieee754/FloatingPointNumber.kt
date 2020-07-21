@@ -1,8 +1,6 @@
 package ieee754
 
-import java.lang.IllegalArgumentException
 import java.math.BigInteger
-import kotlin.math.pow
 
 /** Abstract class that represents floating point value in IEEE 754 format*/
 abstract class FloatingPointNumber(
